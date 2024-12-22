@@ -20,7 +20,7 @@ numberofbhk = st.sidebar.selectbox("Select NumberOfBHK:", df['NumberOfBHK'].uniq
 transaction = st.sidebar.selectbox("Select Transaction:", df['Transaction'].unique())
 availability = st.sidebar.selectbox("Select Availability:", df['Availability'].unique())
 with st.sidebar:
-    st.write("Date Range Filter")
+    st.write("Posted Date Range Filter")
     col1, col2 = st.columns(2)
 
     with col1:
@@ -29,7 +29,7 @@ with st.sidebar:
             value=datetime.today() - relativedelta(months=2),
             label_visibility="collapsed" 
         )
-        st.caption("Start Date")
+        #st.caption("Start Date")
 
     with col2:
         enddate = st.date_input(
@@ -37,7 +37,7 @@ with st.sidebar:
             value=datetime.today(),
             label_visibility="collapsed"  
         )
-        st.caption("End Date")
+        #st.caption("End Date")
 
 df['PostedDate'] = pd.to_datetime(df['PostedDate'], format='%d-%b-%Y')
 #unique_dates = df['PostedDate'].dt.date.unique()
