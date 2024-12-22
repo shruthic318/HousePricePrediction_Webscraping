@@ -51,8 +51,8 @@ filtered_df = df[((df['PostedDate'].dt.date >= pd.to_datetime(startdate).date())
                 & ((df['ReraApproved'] == reraapproved) if reraapproved!='All' else True)
                 & ((df['AreaName'] == areaname) if areaname!='All' else True)
                 ]
-st.write("Filtered DataFrame Index Before Reset:", filtered_df.index)
-filtered_df.reset_index(drop=True)
-st.write("Filtered DataFrame Index After Reset:", filtered_df.index)
+
+filtered_df=filtered_df.copy().reset_index(drop=True)
+
 #st.write("Filtered Data:")
 st.dataframe(filtered_df)
