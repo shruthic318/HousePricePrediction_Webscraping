@@ -5,6 +5,8 @@ import os
 #Load the data to a dataframe
 filepath = os.path.join('Dataset','HousePrice.csv')
 df = pd.read_csv(filepath)  
+#filepath = os.path.join(os.path.dirname(__file__), 'Dataset', 'HousePrice.csv')
+#df = pd.read_csv(filepath)
 
 #WebScraping Results from Property Listing website
 st.title("House Price Prediction Dataset-from Quicker")
@@ -16,8 +18,8 @@ numberofbhk = st.sidebar.selectbox("Select NumberOfBHK:", df['NumberOfBHK'].uniq
 transaction = st.sidebar.selectbox("Select Transaction:", df['Transaction'].unique())
 availability = st.sidebar.selectbox("Select Availability:", df['Availability'].unique())
 date = st.date_input("Select Posted Date:")
-df['PostedDate'] = pd.to_datetime(df['PostedDate'], format='%Y-%m-%d %H:%M:%S')
-unique_dates = df['last_updated'].dt.date.unique()
+df['PostedDate'] = pd.to_datetime(df['PostedDate'], format='%d-%b-%Y')
+unique_dates = df['PostedDate'].dt.date.unique()
 date_filter = st.sidebar.selectbox('Date', unique_dates)
 postedby = st.sidebar.selectbox("Select Posted By:", df['PostedBy'].unique())
 reraapproved = st.sidebar.selectbox("Select Rera Appproved:", df['ReraApproved'].unique())
