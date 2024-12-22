@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 #Load the data to a dataframe
 #filepath = os.path.join('Dataset','HousePrice.csv')
 #df = pd.read_csv(filepath)  
-filepath = os.path.join(os.path.dirname(__file__), 'Dataset', 'HousePrice.csv')
+filepath = os.path.join(os.path.dirname(__file__), 'Dataset', 'Cleaned_HousePrice.csv')
 df = pd.read_csv(filepath)
 
 #WebScraping Results from Property Listing website
@@ -53,6 +53,5 @@ filtered_df = df[((df['PostedDate'].dt.date >= pd.to_datetime(startdate).date())
                 ]
 
 filtered_df=filtered_df.copy().reset_index(drop=True)
-
 #st.write("Filtered Data:")
 st.dataframe(filtered_df)
