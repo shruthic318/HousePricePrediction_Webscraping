@@ -19,9 +19,25 @@ st.dataframe(df.head(5))
 numberofbhk = st.sidebar.selectbox("Select NumberOfBHK:", df['NumberOfBHK'].unique())
 transaction = st.sidebar.selectbox("Select Transaction:", df['Transaction'].unique())
 availability = st.sidebar.selectbox("Select Availability:", df['Availability'].unique())
-startdate = st.date_input("Select Start Date:",value=datetime.today()- relativedelta(months=2))
-enddate = st.date_input("Select Posted Date:")
-df['PostedDate'] = pd.to_datetime(df['PostedDate'], format='%d-%b-%Y')
+with st.sidebar:
+    st.write("Date Range Filter")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        startdate = st.date_input(
+            "Start Date:",
+            value=datetime.today() - relativedelta(months=2),
+            label_visibility="collapsed"  # Hides the label to save space
+        )
+        st.caption("Start Date")
+
+    with col2:
+        enddate = st.date_input(
+            "End Date:",
+            value=datetime.today(),
+            label_visibility="collapsed"  # Hides the label to save space
+        )
+        st.caption("End Date")
 #unique_dates = df['PostedDate'].dt.date.unique()
 #date_filter = st.sidebar.selectbox('Date', unique_dates)
 postedby = st.sidebar.selectbox("Select Posted By:", df['PostedBy'].unique())
