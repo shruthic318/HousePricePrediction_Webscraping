@@ -13,7 +13,7 @@ df = pd.read_csv(filepath)
 #WebScraping Results from Property Listing website
 st.title("House Price Prediction Dataset-from Quicker")
 
-st.dataframe(df.head(5))
+#st.dataframe(df.head(5))
 
 # Filter Options
 numberofbhk = st.sidebar.selectbox("Select NumberOfBHK:",['All'] + sorted(df['NumberOfBHK'].unique().tolist()))
@@ -52,5 +52,5 @@ filtered_df = df[((df['PostedDate'].dt.date >= pd.to_datetime(startdate).date())
                 & ((df['AreaName'] == areaname) if numberofbhk!='All' else True)
                 ]
 
-st.write("Filtered Data:")
+#st.write("Filtered Data:")
 st.dataframe(filtered_df)
