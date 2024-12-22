@@ -27,7 +27,7 @@ with st.sidebar:
         startdate = st.date_input(
             "Start Date:",
             value=datetime.today() - relativedelta(months=2),
-            label_visibility="collapsed"  # Hides the label to save space
+            label_visibility="collapsed" 
         )
         st.caption("Start Date")
 
@@ -35,9 +35,11 @@ with st.sidebar:
         enddate = st.date_input(
             "End Date:",
             value=datetime.today(),
-            label_visibility="collapsed"  # Hides the label to save space
+            label_visibility="collapsed"  
         )
         st.caption("End Date")
+
+df['PostedDate'] = pd.to_datetime(df['PostedDate'], format='%d-%b-%Y')
 #unique_dates = df['PostedDate'].dt.date.unique()
 #date_filter = st.sidebar.selectbox('Date', unique_dates)
 postedby = st.sidebar.selectbox("Select Posted By:", df['PostedBy'].unique())
