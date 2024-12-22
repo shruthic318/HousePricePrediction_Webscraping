@@ -45,11 +45,11 @@ reraapproved = st.sidebar.selectbox("Select Rera Appproved:",['All']+ sorted(df[
 areaname = st.sidebar.selectbox("Select Area Name:",['All']+sorted(df['AreaName'].unique().tolist()))
 filtered_df = df[((df['PostedDate'].dt.date >= pd.to_datetime(startdate).date()) & (df['PostedDate'].dt.date <= pd.to_datetime(enddate).date())) 
                 & ((df['NumberOfBHK'] == numberofbhk) if numberofbhk!='All' else True)
-                & ((df['Transaction'] == transaction) if numberofbhk!='All' else True)
-                & ((df['Availability'] == availability) if numberofbhk!='All' else True)
-                & ((df['PostedBy'] == postedby) if numberofbhk!='All' else True)
-                & ((df['ReraApproved'] == reraapproved) if numberofbhk!='All' else True)
-                & ((df['AreaName'] == areaname) if numberofbhk!='All' else True)
+                & ((df['Transaction'] == transaction) if transaction!='All' else True)
+                & ((df['Availability'] == availability) if availability!='All' else True)
+                & ((df['PostedBy'] == postedby) if postedby!='All' else True)
+                & ((df['ReraApproved'] == reraapproved) if reraapproved!='All' else True)
+                & ((df['AreaName'] == areaname) if areaname!='All' else True)
                 ]
 
 #st.write("Filtered Data:")
