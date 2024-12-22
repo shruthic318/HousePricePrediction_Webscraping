@@ -20,7 +20,7 @@ availability = st.sidebar.selectbox("Select Availability:", df['Availability'].u
 date = st.date_input("Select Posted Date:")
 df['PostedDate'] = pd.to_datetime(df['PostedDate'], format='%d-%b-%Y')
 unique_dates = df['PostedDate'].dt.date.unique()
-date_filter = st.sidebar.selectbox('Date', unique_dates)
+#date_filter = st.sidebar.selectbox('Date', unique_dates)
 postedby = st.sidebar.selectbox("Select Posted By:", df['PostedBy'].unique())
 reraapproved = st.sidebar.selectbox("Select Rera Appproved:", df['ReraApproved'].unique())
 areaname = st.sidebar.selectbox("Select Area Name:", df['AreaName'].unique())
