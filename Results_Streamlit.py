@@ -12,7 +12,7 @@ df = pd.read_csv(filepath)
 print(df.columns)
 
 #WebScraping Results from Property Listing website
-st.title("House Price Prediction Dataset-from Quicker")
+st.markdown("<h3 style='text-align: center; color: black;'>House Price Prediction Dataset-from Quicker</h3>", unsafe_allow_html=True)
 
 #st.dataframe(df.head(5))
 
