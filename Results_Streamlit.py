@@ -5,8 +5,6 @@ import os
 from dateutil.relativedelta import relativedelta
 
 #Load the data to a dataframe
-#filepath = os.path.join('Dataset','HousePrice.csv')
-#df = pd.read_csv(filepath)  
 filepath = os.path.join(os.path.dirname(__file__), 'Dataset', 'Cleaned_HousePrice.csv')
 df = pd.read_csv(filepath)
 print(df.columns)
@@ -20,29 +18,7 @@ st.markdown("<h3 style='text-align: center; color: black;'>House Price Predictio
 numberofbhk = st.sidebar.selectbox("NumberOfBHK:",['All'] + sorted(df['NumberOfBHK'].unique().tolist()))
 transaction = st.sidebar.selectbox("Transaction:",['All'] + sorted(df['Transaction'].unique().tolist()))
 availability = st.sidebar.selectbox("Availability:",['All'] + sorted(df['Availability'].unique().tolist()))
-with st.sidebar:
-    st.write("Posted Date Range")
-    col1, col2 = st.columns(2)
 
-    with col1:
-        startdate = st.date_input(
-            "Start Date:",
-            value=datetime.today() - relativedelta(months=2),
-            label_visibility="collapsed" 
-        )
-        #st.caption("Start Date")
-
-    with col2:
-        enddate = st.date_input(
-            "End Date:",
-            value=datetime.today(),
-            label_visibility="collapsed"  
-        )
-        #st.caption("End Date")
-
-
-df['PostedDate'] = pd.to_datetime(df['PostedDate'], errors='coerce')  # Automatically parse date formats
-#df['PostedDate'] = df['PostedDate'].dt.strftime('%d-%m-%Y')
 df['Price'] = pd.to_numeric(df['Price'], errors='coerce')
 with st.sidebar:
     st.write("Price Range")
@@ -96,16 +72,13 @@ with st.sidebar:
         if pd.isna(builtupareamax): 
             builtupareamax = df['BuiltUpArea_sqft'].max()
 
-
-df['PostedDate'] = pd.to_datetime(df['PostedDate'], errors='coerce')  # Automatically parse date formats
 df['Price'] = pd.to_numeric(df['Price'], errors='coerce')
 df['BuiltUpArea_sqft'] = pd.to_numeric(df['BuiltUpArea_sqft'], errors='coerce')
 
 postedby = st.sidebar.selectbox("Posted By:",['All']+ sorted(df['PostedBy'].unique().tolist()))
 reraapproved = st.sidebar.selectbox("Rera Appproved:",['All']+ sorted(df['ReraApproved'].unique().tolist()))
 areaname = st.sidebar.selectbox("Area Name:",['All']+sorted(df['AreaName'].unique().tolist()))
-filtered_df = df[((df['PostedDate'] >= pd.to_datetime(startdate)) & (df['PostedDate'] <= pd.to_datetime(enddate)))
-                & ((df['Price'] >= pricemin) & (df['Price'] <= pricemax))
+filtered_df = df[((df['Price'] >= pricemin) & (df['Price'] <= pricemax))
                 & ((df['BuiltUpArea_sqft'] >= builtupareamin) & (df['BuiltUpArea_sqft'] <= builtupareamax))
                 & ((df['NumberOfBHK'] == numberofbhk) if numberofbhk!='All' else True)
                 & ((df['Transaction'] == transaction) if transaction!='All' else True)
@@ -116,5 +89,5 @@ filtered_df = df[((df['PostedDate'] >= pd.to_datetime(startdate)) & (df['PostedD
                 ]
 
 filtered_df=filtered_df.copy().reset_index(drop=True)
-#st.write("Filtered Data:")
+
 st.dataframe(filtered_df)
