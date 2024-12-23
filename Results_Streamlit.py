@@ -9,6 +9,7 @@ from dateutil.relativedelta import relativedelta
 #df = pd.read_csv(filepath)  
 filepath = os.path.join(os.path.dirname(__file__), 'Dataset', 'Cleaned_HousePrice.csv')
 df = pd.read_csv(filepath)
+print(df.columns)
 
 #WebScraping Results from Property Listing website
 st.title("House Price Prediction Dataset-from Quicker")
@@ -41,12 +42,12 @@ with st.sidebar:
 
 
 df['PostedDate'] = pd.to_datetime(df['PostedDate'], errors='coerce')  # Automatically parse date formats
-df['PostedDate'] = df['PostedDate'].dt.strftime('%d-%m-%Y')
+#df['PostedDate'] = df['PostedDate'].dt.strftime('%d-%m-%Y')
 
 postedby = st.sidebar.selectbox("Select Posted By:",['All']+ sorted(df['PostedBy'].unique().tolist()))
 reraapproved = st.sidebar.selectbox("Select Rera Appproved:",['All']+ sorted(df['ReraApproved'].unique().tolist()))
 areaname = st.sidebar.selectbox("Select Area Name:",['All']+sorted(df['AreaName'].unique().tolist()))
-filtered_df = df[((df['PostedDate'] >= pd.to_datetime(startdate).strftime('%d-%m-%Y')) & (df['PostedDate'] <= pd.to_datetime(enddate).strftime('%d-%m-%Y'))) 
+filtered_df = df[(df['PostedDate'] >= pd.to_datetime(startdate)) & (df['PostedDate'] <= pd.to_datetime(enddate))
                 & ((df['NumberOfBHK'] == numberofbhk) if numberofbhk!='All' else True)
                 & ((df['Transaction'] == transaction) if transaction!='All' else True)
                 & ((df['Availability'] == availability) if availability!='All' else True)
