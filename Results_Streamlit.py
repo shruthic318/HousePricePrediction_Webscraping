@@ -9,6 +9,7 @@ from dateutil.relativedelta import relativedelta
 #df = pd.read_csv(filepath)  
 filepath = os.path.join(os.path.dirname(__file__), 'Dataset', 'Cleaned_HousePrice.csv')
 df = pd.read_csv(filepath)
+print(df.columns)
 
 #WebScraping Results from Property Listing website
 st.title("House Price Prediction Dataset-from Quicker")
