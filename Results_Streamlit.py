@@ -17,11 +17,11 @@ st.markdown("<h3 style='text-align: center; color: black;'>House Price Predictio
 #st.dataframe(df.head(5))
 
 # Filter Options
-numberofbhk = st.sidebar.selectbox("Select NumberOfBHK:",['All'] + sorted(df['NumberOfBHK'].unique().tolist()))
-transaction = st.sidebar.selectbox("Select Transaction:",['All'] + sorted(df['Transaction'].unique().tolist()))
-availability = st.sidebar.selectbox("Select Availability:",['All'] + sorted(df['Availability'].unique().tolist()))
+numberofbhk = st.sidebar.selectbox("NumberOfBHK:",['All'] + sorted(df['NumberOfBHK'].unique().tolist()))
+transaction = st.sidebar.selectbox("Transaction:",['All'] + sorted(df['Transaction'].unique().tolist()))
+availability = st.sidebar.selectbox("Availability:",['All'] + sorted(df['Availability'].unique().tolist()))
 with st.sidebar:
-    st.write("Posted Date Range Filter")
+    st.write("Posted Date Range")
     col1, col2 = st.columns(2)
 
     with col1:
@@ -45,7 +45,7 @@ df['PostedDate'] = pd.to_datetime(df['PostedDate'], errors='coerce')  # Automati
 #df['PostedDate'] = df['PostedDate'].dt.strftime('%d-%m-%Y')
 df['Price'] = pd.to_numeric(df['Price'], errors='coerce')
 with st.sidebar:
-    st.write("Price Range Filter")
+    st.write("Price Range")
     col1, col2 = st.columns(2)
 
     with col1:
@@ -71,7 +71,7 @@ with st.sidebar:
             pricemax = df['Price'].max()
 
 with st.sidebar:
-    st.write("Price Range Filter")
+    st.write("Built Up Area Range")
     col1, col2 = st.columns(2)
 
     with col1:
@@ -101,9 +101,9 @@ df['PostedDate'] = pd.to_datetime(df['PostedDate'], errors='coerce')  # Automati
 df['Price'] = pd.to_numeric(df['Price'], errors='coerce')
 df['BuiltUpArea_sqft'] = pd.to_numeric(df['BuiltUpArea_sqft'], errors='coerce')
 
-postedby = st.sidebar.selectbox("Select Posted By:",['All']+ sorted(df['PostedBy'].unique().tolist()))
-reraapproved = st.sidebar.selectbox("Select Rera Appproved:",['All']+ sorted(df['ReraApproved'].unique().tolist()))
-areaname = st.sidebar.selectbox("Select Area Name:",['All']+sorted(df['AreaName'].unique().tolist()))
+postedby = st.sidebar.selectbox("Posted By:",['All']+ sorted(df['PostedBy'].unique().tolist()))
+reraapproved = st.sidebar.selectbox("Rera Appproved:",['All']+ sorted(df['ReraApproved'].unique().tolist()))
+areaname = st.sidebar.selectbox("Area Name:",['All']+sorted(df['AreaName'].unique().tolist()))
 filtered_df = df[((df['PostedDate'] >= pd.to_datetime(startdate)) & (df['PostedDate'] <= pd.to_datetime(enddate)))
                 & ((df['Price'] >= pricemin) & (df['Price'] <= pricemax))
                 & ((df['BuiltUpArea_sqft'] >= builtupareamin) & (df['BuiltUpArea_sqft'] <= builtupareamax))
