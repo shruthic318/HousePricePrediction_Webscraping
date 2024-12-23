@@ -39,11 +39,14 @@ with st.sidebar:
         )
         #st.caption("End Date")
 
-df['PostedDate'] = pd.to_datetime(df['PostedDate'], format='%d-%b-%Y')
+
+df['PostedDate'] = pd.to_datetime(df['PostedDate'], errors='coerce')  # Automatically parse date formats
+df['PostedDate'] = df['PostedDate'].dt.strftime('%d-%m-%Y')
+
 postedby = st.sidebar.selectbox("Select Posted By:",['All']+ sorted(df['PostedBy'].unique().tolist()))
 reraapproved = st.sidebar.selectbox("Select Rera Appproved:",['All']+ sorted(df['ReraApproved'].unique().tolist()))
 areaname = st.sidebar.selectbox("Select Area Name:",['All']+sorted(df['AreaName'].unique().tolist()))
-filtered_df = df[((df['PostedDate'].dt.date >= pd.to_datetime(startdate).date()) & (df['PostedDate'].dt.date <= pd.to_datetime(enddate).date())) 
+filtered_df = df[((df['PostedDate'] >= pd.to_datetime(startdate).strftime('%d-%m-%Y')) & (df['PostedDate'] <= pd.to_datetime(enddate).strftime('%d-%m-%Y'))) 
                 & ((df['NumberOfBHK'] == numberofbhk) if numberofbhk!='All' else True)
                 & ((df['Transaction'] == transaction) if transaction!='All' else True)
                 & ((df['Availability'] == availability) if availability!='All' else True)
