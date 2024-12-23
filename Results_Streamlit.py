@@ -43,11 +43,30 @@ with st.sidebar:
 
 df['PostedDate'] = pd.to_datetime(df['PostedDate'], errors='coerce')  # Automatically parse date formats
 #df['PostedDate'] = df['PostedDate'].dt.strftime('%d-%m-%Y')
+with st.sidebar:
+    st.write("Price Range Filter")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        pricemin = st.number_input(
+            "PriceMin:",
+            value=df['Price'].astype(int).min(),
+            label_visibility="collapsed" 
+        )
+        #st.caption("Start Date")
+
+    with col2:
+        pricemax = st.number_input(
+            "PriceMax:",
+            value=df['Price'].astype(int).max(),
+            label_visibility="collapsed"  
+        )
 
 postedby = st.sidebar.selectbox("Select Posted By:",['All']+ sorted(df['PostedBy'].unique().tolist()))
 reraapproved = st.sidebar.selectbox("Select Rera Appproved:",['All']+ sorted(df['ReraApproved'].unique().tolist()))
 areaname = st.sidebar.selectbox("Select Area Name:",['All']+sorted(df['AreaName'].unique().tolist()))
-filtered_df = df[(df['PostedDate'] >= pd.to_datetime(startdate)) & (df['PostedDate'] <= pd.to_datetime(enddate))
+filtered_df = df[((df['PostedDate'] >= pd.to_datetime(startdate)) & (df['PostedDate'] <= pd.to_datetime(enddate)))
+                & ((df['Price'].astype(int) >= pricemin) & (df['Price'].astype(int) <= pricemax))
                 & ((df['NumberOfBHK'] == numberofbhk) if numberofbhk!='All' else True)
                 & ((df['Transaction'] == transaction) if transaction!='All' else True)
                 & ((df['Availability'] == availability) if availability!='All' else True)
