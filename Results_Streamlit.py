@@ -70,11 +70,43 @@ with st.sidebar:
         if pd.isna(pricemin): 
             pricemax = df['Price'].max()
 
+with st.sidebar:
+    st.write("Price Range Filter")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        builtupareamin = st.text_input(
+            "BuiltUpAreaMin:",
+            value=df['BuiltUpArea_sqft'].min(),
+            label_visibility="collapsed" 
+        )
+        #st.caption("Start Date")
+        builtupareamin = pd.to_numeric(builtupareamin, errors='coerce')
+        if pd.isna(builtupareamin): 
+            builtupareamin = df['BuiltUpArea_sqft'].min()
+
+    with col2:
+        builtupareamax = st.text_input(
+            "PriceMax:",
+            value=df['BuiltUpArea_sqft'].max(),
+            label_visibility="collapsed"  
+        )
+
+        builtupareamax = pd.to_numeric(builtupareamax, errors='coerce')
+        if pd.isna(builtupareamax): 
+            builtupareamax = df['BuiltUpArea_sqft'].max()
+
+
+df['PostedDate'] = pd.to_datetime(df['PostedDate'], errors='coerce')  # Automatically parse date formats
+df['Price'] = pd.to_numeric(df['Price'], errors='coerce')
+df['BuiltUpArea_sqft'] = pd.to_numeric(df['BuiltUpArea_sqft'], errors='coerce')
+
 postedby = st.sidebar.selectbox("Select Posted By:",['All']+ sorted(df['PostedBy'].unique().tolist()))
 reraapproved = st.sidebar.selectbox("Select Rera Appproved:",['All']+ sorted(df['ReraApproved'].unique().tolist()))
 areaname = st.sidebar.selectbox("Select Area Name:",['All']+sorted(df['AreaName'].unique().tolist()))
 filtered_df = df[((df['PostedDate'] >= pd.to_datetime(startdate)) & (df['PostedDate'] <= pd.to_datetime(enddate)))
                 & ((df['Price'] >= pricemin) & (df['Price'] <= pricemax))
+                & ((df['BuiltUpArea_sqft'] >= builtupareamin) & (df['BuiltUpArea_sqft'] <= builtupareamax))
                 & ((df['NumberOfBHK'] == numberofbhk) if numberofbhk!='All' else True)
                 & ((df['Transaction'] == transaction) if transaction!='All' else True)
                 & ((df['Availability'] == availability) if availability!='All' else True)
