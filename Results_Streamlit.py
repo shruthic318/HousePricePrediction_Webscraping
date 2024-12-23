@@ -43,6 +43,7 @@ with st.sidebar:
 
 df['PostedDate'] = pd.to_datetime(df['PostedDate'], errors='coerce')  # Automatically parse date formats
 #df['PostedDate'] = df['PostedDate'].dt.strftime('%d-%m-%Y')
+df['Price'] = pd.to_numeric(df['Price'], errors='coerce')
 with st.sidebar:
     st.write("Price Range Filter")
     col1, col2 = st.columns(2)
@@ -50,23 +51,30 @@ with st.sidebar:
     with col1:
         pricemin = st.text_input(
             "PriceMin:",
-            value=df['Price'].astype(int).min(),
+            value=df['Price'].min(),
             label_visibility="collapsed" 
         )
         #st.caption("Start Date")
+        pricemin = pd.to_numeric(pricemin, errors='coerce')
+        if pd.isna(pricemin): 
+            pricemin = df['Price'].min()
 
     with col2:
         pricemax = st.text_input(
             "PriceMax:",
-            value=df['Price'].astype(int).max(),
+            value=df['Price'].max(),
             label_visibility="collapsed"  
         )
+
+        pricemax = pd.to_numeric(pricemax, errors='coerce')
+        if pd.isna(pricemin): 
+            pricemax = df['Price'].max()
 
 postedby = st.sidebar.selectbox("Select Posted By:",['All']+ sorted(df['PostedBy'].unique().tolist()))
 reraapproved = st.sidebar.selectbox("Select Rera Appproved:",['All']+ sorted(df['ReraApproved'].unique().tolist()))
 areaname = st.sidebar.selectbox("Select Area Name:",['All']+sorted(df['AreaName'].unique().tolist()))
 filtered_df = df[((df['PostedDate'] >= pd.to_datetime(startdate)) & (df['PostedDate'] <= pd.to_datetime(enddate)))
-                & ((df['Price'].astype(int) >= pricemin) & (df['Price'].astype(int) <= pricemax))
+                & ((df['Price'] >= pricemin) & (df['Price'] <= pricemax))
                 & ((df['NumberOfBHK'] == numberofbhk) if numberofbhk!='All' else True)
                 & ((df['Transaction'] == transaction) if transaction!='All' else True)
                 & ((df['Availability'] == availability) if availability!='All' else True)
