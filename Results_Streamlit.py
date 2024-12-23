@@ -48,7 +48,7 @@ with st.sidebar:
     col1, col2 = st.columns(2)
 
     with col1:
-        pricemin = st.number_input(
+        pricemin = st.text_input(
             "PriceMin:",
             value=df['Price'].astype(int).min(),
             label_visibility="collapsed" 
@@ -56,7 +56,7 @@ with st.sidebar:
         #st.caption("Start Date")
 
     with col2:
-        pricemax = st.number_input(
+        pricemax = st.text_input(
             "PriceMax:",
             value=df['Price'].astype(int).max(),
             label_visibility="collapsed"  
