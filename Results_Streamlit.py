@@ -93,7 +93,7 @@ filtered_df = df[((df['Price'] >= pricemin) & (df['Price'] <= pricemax))
                 ]
 
 filtered_df=filtered_df.iloc[:,1:]
-if filtered_df.empty:
+if not filtered_df.empty:
     st.dataframe(filtered_df)
 else:
     st.markdown(
@@ -119,7 +119,7 @@ merged_df = pd.merge(filtered_df, area_coords, left_on="AreaName", right_on="Are
 #merged_df
 
 
-if merged_df.empty:
+if not merged_df.empty:
     # Initialize a Folium map centered on Bangalore
     bangalore_map = folium.Map(location=[12.9716, 77.5946], zoom_start=10)
 
@@ -187,7 +187,7 @@ heatmap_points = [
 ]
 
 # Create the map centered around the average latitude and longitude
-if merged_df.empty:  # Check if there are valid points
+if not merged_df.empty:  # Check if there are valid points
     map_center = [
         aggregated_data['Latitude'].mean(),
         aggregated_data['Longitude'].mean(),
