@@ -156,7 +156,9 @@ else:
     <h4 style='text-align: center; color: red; font-family: Arial, sans-serif; font-size: 16px;'>
         No Data available for property count map
     </h4>
-    """)
+    """, 
+    unsafe_allow_html=True
+)
 
 # Ensure no division by zero for BuiltUpArea
 merged_df = merged_df[merged_df['BuiltUpArea_sqft'] > 0]
