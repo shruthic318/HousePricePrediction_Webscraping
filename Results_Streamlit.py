@@ -139,18 +139,6 @@ for _, row in merged_df.iterrows():
 st.markdown("<h3 style='text-align: center; color: black;'>Bangalore Map Visualization</h3>", unsafe_allow_html=True)
 st.components.v1.html(bangalore_map._repr_html_(), height=600)
 
-# Add a graph: Number of properties per area
-st.markdown("<h3 style='text-align: center; color: black;'>Number of Properties per Area</h3>", unsafe_allow_html=True)
-area_counts = filtered_df['AreaName'].value_counts()
-
-fig, ax = plt.subplots(figsize=(10, 6))
-area_counts.plot(kind='bar', ax=ax, color='skyblue')
-ax.set_title('Number of Properties per Area', fontsize=16)
-ax.set_xlabel('Area Name', fontsize=12)
-ax.set_ylabel('Number of Properties', fontsize=12)
-st.pyplot(fig)
-
-
 # Save the map to an HTML file
 #map_output_path = "bangalore_visualization_map.html"
 
