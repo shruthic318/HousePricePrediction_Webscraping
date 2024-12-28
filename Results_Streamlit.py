@@ -159,6 +159,18 @@ else:
     """, 
     unsafe_allow_html=True
 )
+    
+st.markdown(
+    """
+    <style>
+        .block-container {
+            padding-top: 1rem; /* Adjust top padding */
+            padding-bottom: 1rem; /* Adjust bottom padding */
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)    
 
 # Ensure no division by zero for BuiltUpArea
 merged_df = merged_df[merged_df['BuiltUpArea_sqft'] > 0]
