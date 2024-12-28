@@ -97,7 +97,7 @@ from folium.plugins import MarkerCluster
 
 # Load the CSV containing unique area names with latitude and longitude
 filepath = os.path.join('Map','areas_latitude_longitude.csv')
-area_coords = pd.read_csv(filepath)  # Replace with the path to the CSV
+area_coords = pd.read_csv(filepath)  
 
 
 filtered_df['AreaName'] = filtered_df['AreaName'].str.strip().str.lower()
