@@ -167,21 +167,22 @@ heatmap_points = [
 ]
 
 # Create the map centered around the average latitude and longitude
-#if not aggregated_data.empty:  # Check if there are valid points
-map_center = [
-    aggregated_data['Latitude'].mean(),
-    aggregated_data['Longitude'].mean(),
-]
-m = folium.Map(location=map_center, zoom_start=11)
+if not aggregated_data.empty:  # Check if there are valid points
+    map_center = [
+        aggregated_data['Latitude'].mean(),
+        aggregated_data['Longitude'].mean(),
+    ]
+    m = folium.Map(location=map_center, zoom_start=11)
 
-# Add the heatmap
-HeatMap(heatmap_points).add_to(m)
+    # Add the heatmap
+    HeatMap(heatmap_points).add_to(m)
 
-# Save the map to an HTML file
-m.save("price_per_sqft_heatmap.html")
-# Display the map
-st.markdown("<h3 style='text-align: center; color: black;'>Heat Map of Property Listing by Area</h3>", unsafe_allow_html=True)
-st.components.v1.html(m._repr_html_(), height=600)
-#print("Heatmap created and saved as 'price_per_sqft_heatmap.html'.")
-#else:
-#    st.markdown("<h3 style='text-align: center; color: black;'>No Valid Datapoints</h3>", unsafe_allow_html=True)
+    # Save the map to an HTML file
+    m.save("price_per_sqft_heatmap.html")
+    # Display the map
+    st.markdown("<h3 style='text-align: center; color: black;'>Heat Map of Property Listing by Area</h3>", unsafe_allow_html=True)
+    st.components.v1.html(m._repr_html_(), height=600)
+    #print("Heatmap created and saved as 'price_per_sqft_heatmap.html'.")
+else:
+    st.markdown("<h3 style='text-align: center; color: black;'>Heat Map of Property Listing by Area</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center; color: red;'>No data available for heatmap</h3>", unsafe_allow_html=True)
