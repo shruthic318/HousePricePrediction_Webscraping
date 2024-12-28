@@ -1,4 +1,5 @@
 from datetime import datetime
+from matplotlib import pyplot as plt
 import streamlit as st
 import pandas as pd
 import os
@@ -90,3 +91,72 @@ filtered_df = df[((df['Price'] >= pricemin) & (df['Price'] <= pricemax))
 
 filtered_df=filtered_df.iloc[:,1:]
 st.dataframe(filtered_df)
+
+import folium
+from folium.plugins import MarkerCluster
+
+# Load the CSV containing unique area names with latitude and longitude
+filepath = os.path.join('Map','areas_latitude_longitude.csv')
+area_coords = pd.read_csv(filepath)  # Replace with the path to the CSV
+
+
+filtered_df['AreaName'] = filtered_df['AreaName'].str.strip().str.lower()
+area_coords['AreaName'] = area_coords['AreaName'].str.strip().str.lower()
+
+# Merge df with area_coords to get latitude and longitude for each AreaName
+merged_df = pd.merge(filtered_df, area_coords, left_on="AreaName", right_on="AreaName", how="left")
+#merged_df
+
+
+
+# Initialize a Folium map centered on Bangalore
+bangalore_map = folium.Map(location=[12.9716, 77.5946], zoom_start=10)
+
+# Add markers to the map with MarkerCluster
+marker_cluster = MarkerCluster().add_to(bangalore_map)
+
+for _, row in merged_df.iterrows():
+    # Ensure valid latitude and longitude
+    if not pd.isnull(row['Latitude']) and not pd.isnull(row['Longitude']):
+        # Create a popup with relevant information
+        popup_html = f"""
+        <b>Area:</b> {row['AreaName']}<br>
+        <b>Number of BHK:</b> {row['NumberOfBHK']}<br>
+        <b>Price:</b> {row['Price']}<br>
+        <b>Transaction:</b> {row['Transaction']}<br>
+        <b>Built-up Area:</b> {row['BuiltUpArea_sqft']}<br>
+        <b>Availability:</b> {row['Availability']}<br>
+        <b>Posted By:</b> {row['PostedBy']}<br>
+        <b>RERA Approved:</b> {row['ReraApproved']}
+        """
+        
+        folium.Marker(
+            location=[row['Latitude'], row['Longitude']],
+            popup=popup_html,
+        ).add_to(marker_cluster)
+
+# Display the map
+st.markdown("<h3 style='text-align: center; color: black;'>Bangalore Map Visualization</h3>", unsafe_allow_html=True)
+st.components.v1.html(bangalore_map._repr_html_(), height=600)
+
+# Add a graph: Number of properties per area
+st.markdown("<h3 style='text-align: center; color: black;'>Number of Properties per Area</h3>", unsafe_allow_html=True)
+area_counts = filtered_df['AreaName'].value_counts()
+
+fig, ax = plt.subplots(figsize=(10, 6))
+area_counts.plot(kind='bar', ax=ax, color='skyblue')
+ax.set_title('Number of Properties per Area', fontsize=16)
+ax.set_xlabel('Area Name', fontsize=12)
+ax.set_ylabel('Number of Properties', fontsize=12)
+st.pyplot(fig)
+
+
+# Save the map to an HTML file
+#map_output_path = "bangalore_visualization_map.html"
+
+
+#bangalore_map.save(map_output_path)
+
+#print(f"Map saved to {map_output_path}. Open this file in a browser to view the visualization.")
+
+
