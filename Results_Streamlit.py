@@ -136,15 +136,6 @@ for _, row in merged_df.iterrows():
         ).add_to(marker_cluster)
 
 # Display the map
-st.markdown("<h3 style='text-align: center; color: black;'>Bangalore Map Visualization</h3>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align: center; color: black;'>Property Listing count by Area</h3>", unsafe_allow_html=True)
 st.components.v1.html(bangalore_map._repr_html_(), height=600)
-
-# Save the map to an HTML file
-#map_output_path = "bangalore_visualization_map.html"
-
-
-#bangalore_map.save(map_output_path)
-
-#print(f"Map saved to {map_output_path}. Open this file in a browser to view the visualization.")
-
 
