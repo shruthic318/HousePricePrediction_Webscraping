@@ -5,6 +5,8 @@ import pandas as pd
 import os
 from dateutil.relativedelta import relativedelta
 from folium.plugins import HeatMap
+import folium
+from folium.plugins import MarkerCluster
 
 #Load the data to a dataframe
 filepath = os.path.join(os.path.dirname(__file__), 'Dataset', 'Cleaned_HousePrice.csv')
@@ -91,10 +93,18 @@ filtered_df = df[((df['Price'] >= pricemin) & (df['Price'] <= pricemax))
                 ]
 
 filtered_df=filtered_df.iloc[:,1:]
-st.dataframe(filtered_df)
+if filtered_df.empty:
+    st.dataframe(filtered_df)
+else:
+    st.markdown(
+    """
+    <h4 style='text-align: center; color: red; font-family: Arial, sans-serif; font-size: 16px;'>
+        No Data available
+    </h4>
+    """, 
+    unsafe_allow_html=True
+)
 
-import folium
-from folium.plugins import MarkerCluster
 
 # Load the CSV containing unique area names with latitude and longitude
 filepath = os.path.join(os.path.dirname(__file__), 'Map', 'areas_latitude_longitude.csv')
@@ -109,36 +119,44 @@ merged_df = pd.merge(filtered_df, area_coords, left_on="AreaName", right_on="Are
 #merged_df
 
 
+if merged_df.empty:
+    # Initialize a Folium map centered on Bangalore
+    bangalore_map = folium.Map(location=[12.9716, 77.5946], zoom_start=10)
 
-# Initialize a Folium map centered on Bangalore
-bangalore_map = folium.Map(location=[12.9716, 77.5946], zoom_start=10)
+    # Add markers to the map with MarkerCluster
+    marker_cluster = MarkerCluster().add_to(bangalore_map)
 
-# Add markers to the map with MarkerCluster
-marker_cluster = MarkerCluster().add_to(bangalore_map)
+    for _, row in merged_df.iterrows():
+        # Ensure valid latitude and longitude
+        if not pd.isnull(row['Latitude']) and not pd.isnull(row['Longitude']):
+            # Create a popup with relevant information
+            popup_html = f"""
+            <b>Area:</b> {row['AreaName']}<br>
+            <b>Number of BHK:</b> {row['NumberOfBHK']}<br>
+            <b>Price:</b> {row['Price']}<br>
+            <b>Transaction:</b> {row['Transaction']}<br>
+            <b>Built-up Area:</b> {row['BuiltUpArea_sqft']}<br>
+            <b>Availability:</b> {row['Availability']}<br>
+            <b>Posted By:</b> {row['PostedBy']}<br>
+            <b>RERA Approved:</b> {row['ReraApproved']}
+            """
+            
+            folium.Marker(
+                location=[row['Latitude'], row['Longitude']],
+                popup=popup_html,
+            ).add_to(marker_cluster)
 
-for _, row in merged_df.iterrows():
-    # Ensure valid latitude and longitude
-    if not pd.isnull(row['Latitude']) and not pd.isnull(row['Longitude']):
-        # Create a popup with relevant information
-        popup_html = f"""
-        <b>Area:</b> {row['AreaName']}<br>
-        <b>Number of BHK:</b> {row['NumberOfBHK']}<br>
-        <b>Price:</b> {row['Price']}<br>
-        <b>Transaction:</b> {row['Transaction']}<br>
-        <b>Built-up Area:</b> {row['BuiltUpArea_sqft']}<br>
-        <b>Availability:</b> {row['Availability']}<br>
-        <b>Posted By:</b> {row['PostedBy']}<br>
-        <b>RERA Approved:</b> {row['ReraApproved']}
-        """
-        
-        folium.Marker(
-            location=[row['Latitude'], row['Longitude']],
-            popup=popup_html,
-        ).add_to(marker_cluster)
-
-# Display the map
-st.markdown("<h3 style='text-align: center; color: black;'>Property Listing count by Area</h3>", unsafe_allow_html=True)
-st.components.v1.html(bangalore_map._repr_html_(), height=600)
+    # Display the map
+    st.markdown("<h3 style='text-align: center; color: black;'>Property Listing count by Area</h3>", unsafe_allow_html=True)
+    st.components.v1.html(bangalore_map._repr_html_(), height=600)
+else:
+    st.markdown("<h3 style='text-align: center; color: black;'>Property Listing count by Area</h3>", unsafe_allow_html=True)
+    st.markdown(
+    """
+    <h4 style='text-align: center; color: red; font-family: Arial, sans-serif; font-size: 16px;'>
+        No Data available for property count map
+    </h4>
+    """)
 
 # Ensure no division by zero for BuiltUpArea
 merged_df = merged_df[merged_df['BuiltUpArea_sqft'] > 0]
