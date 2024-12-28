@@ -88,6 +88,7 @@ filtered_df = df[((df['Price'] >= pricemin) & (df['Price'] <= pricemax))
                 & ((df['AreaName'] == areaname) if areaname!='All' else True)
                 ]
 
-filtered_df=filtered_df.copy().reset_index(drop=True)
+#filtered_df=filtered_df.copy().reset_index(drop=True)
+filtered_df=filtered_df.iloc[:,1:]
 
 st.dataframe(filtered_df)
