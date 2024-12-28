@@ -185,4 +185,11 @@ if not aggregated_data.empty:  # Check if there are valid points
     #print("Heatmap created and saved as 'price_per_sqft_heatmap.html'.")
 else:
     st.markdown("<h3 style='text-align: center; color: black;'>Heat Map of Property Listing by Area</h3>", unsafe_allow_html=True)
-    st.markdown("<h3 style='text-align: center; color: red;'>No data available for heatmap</h3>", unsafe_allow_html=True)
+    st.markdown(
+    """
+    <h4 style='text-align: center; color: red; font-family: Arial, sans-serif; font-size: 16px;'>
+        No Data available for heatmap
+    </h4>
+    """, 
+    unsafe_allow_html=True
+)
