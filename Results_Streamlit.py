@@ -187,7 +187,7 @@ heatmap_points = [
 ]
 
 # Create the map centered around the average latitude and longitude
-if not aggregated_data.empty:  # Check if there are valid points
+if merged_df.empty:  # Check if there are valid points
     map_center = [
         aggregated_data['Latitude'].mean(),
         aggregated_data['Longitude'].mean(),
