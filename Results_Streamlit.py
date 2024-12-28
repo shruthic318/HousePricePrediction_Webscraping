@@ -4,6 +4,7 @@ import streamlit as st
 import pandas as pd
 import os
 from dateutil.relativedelta import relativedelta
+from folium.plugins import HeatMap
 
 #Load the data to a dataframe
 filepath = os.path.join(os.path.dirname(__file__), 'Dataset', 'Cleaned_HousePrice.csv')
@@ -139,3 +140,48 @@ for _, row in merged_df.iterrows():
 st.markdown("<h3 style='text-align: center; color: black;'>Property Listing count by Area</h3>", unsafe_allow_html=True)
 st.components.v1.html(bangalore_map._repr_html_(), height=600)
 
+# Ensure no division by zero for BuiltUpArea
+merged_df = merged_df[merged_df['BuiltUpArea_sqft'] > 0]
+
+# Calculate Price Per SqFt
+merged_df['PricePerSqFt'] = merged_df['Price'] / merged_df['BuiltUpArea_sqft']
+
+# Aggregate data by AreaName to calculate average PricePerSqFt
+aggregated_data = merged_df.groupby('AreaName').agg({
+    'Latitude': 'first',
+    'Longitude': 'first',
+    'PricePerSqFt': 'mean'  # Use 'mean' for average price per square foot
+}).reset_index()
+
+# Remove rows with null Latitude or Longitude
+aggregated_data = aggregated_data.dropna(subset=['Latitude', 'Longitude'])
+
+# Normalize PricePerSqFt for intensity
+max_price_per_sqft = aggregated_data['PricePerSqFt'].max()
+aggregated_data['Intensity'] = aggregated_data['PricePerSqFt'] / max_price_per_sqft
+
+# Prepare data for the heatmap
+heatmap_points = [
+    [row['Latitude'], row['Longitude'], row['Intensity']]
+    for index, row in aggregated_data.iterrows()
+]
+
+# Create the map centered around the average latitude and longitude
+if not aggregated_data.empty:  # Check if there are valid points
+    map_center = [
+        aggregated_data['Latitude'].mean(),
+        aggregated_data['Longitude'].mean(),
+    ]
+    m = folium.Map(location=map_center, zoom_start=11)
+
+    # Add the heatmap
+    HeatMap(heatmap_points).add_to(m)
+
+    # Save the map to an HTML file
+    m.save("price_per_sqft_heatmap.html")
+    # Display the map
+    st.markdown("<h3 style='text-align: center; color: black;'>Heat Map of Property Listing by Area</h3>", unsafe_allow_html=True)
+    st.components.v1.html(m._repr_html_(), height=600)
+    #print("Heatmap created and saved as 'price_per_sqft_heatmap.html'.")
+else:
+    st.markdown("<h3 style='text-align: center; color: black;'>No Valid Datapoints</h3>", unsafe_allow_html=True)
