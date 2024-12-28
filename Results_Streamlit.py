@@ -8,8 +8,6 @@ from folium.plugins import HeatMap
 import folium
 from folium.plugins import MarkerCluster
 
-st.set_page_config(layout="wide")
-
 #Load the data to a dataframe
 filepath = os.path.join(os.path.dirname(__file__), 'Dataset', 'Cleaned_HousePrice.csv')
 df = pd.read_csv(filepath)
@@ -95,6 +93,7 @@ filtered_df = df[((df['Price'] >= pricemin) & (df['Price'] <= pricemax))
                 ]
 
 filtered_df=filtered_df.iloc[:,1:]
+
 if not filtered_df.empty:
     st.dataframe(filtered_df)
 else:
@@ -120,59 +119,49 @@ area_coords['AreaName'] = area_coords['AreaName'].str.strip().str.lower()
 merged_df = pd.merge(filtered_df, area_coords, left_on="AreaName", right_on="AreaName", how="left")
 #merged_df
 
+col1,col2=st.columns([1,1])
+with col1:
+    if not merged_df.empty:
+        # Initialize a Folium map centered on Bangalore
+        bangalore_map = folium.Map(location=[12.9716, 77.5946], zoom_start=10)
 
-if not merged_df.empty:
-    # Initialize a Folium map centered on Bangalore
-    bangalore_map = folium.Map(location=[12.9716, 77.5946], zoom_start=10)
+        # Add markers to the map with MarkerCluster
+        marker_cluster = MarkerCluster().add_to(bangalore_map)
 
-    # Add markers to the map with MarkerCluster
-    marker_cluster = MarkerCluster().add_to(bangalore_map)
+        for _, row in merged_df.iterrows():
+            # Ensure valid latitude and longitude
+            if not pd.isnull(row['Latitude']) and not pd.isnull(row['Longitude']):
+                # Create a popup with relevant information
+                popup_html = f"""
+                <b>Area:</b> {row['AreaName']}<br>
+                <b>Number of BHK:</b> {row['NumberOfBHK']}<br>
+                <b>Price:</b> {row['Price']}<br>
+                <b>Transaction:</b> {row['Transaction']}<br>
+                <b>Built-up Area:</b> {row['BuiltUpArea_sqft']}<br>
+                <b>Availability:</b> {row['Availability']}<br>
+                <b>Posted By:</b> {row['PostedBy']}<br>
+                <b>RERA Approved:</b> {row['ReraApproved']}
+                """
+                
+                folium.Marker(
+                    location=[row['Latitude'], row['Longitude']],
+                    popup=popup_html,
+                ).add_to(marker_cluster)
 
-    for _, row in merged_df.iterrows():
-        # Ensure valid latitude and longitude
-        if not pd.isnull(row['Latitude']) and not pd.isnull(row['Longitude']):
-            # Create a popup with relevant information
-            popup_html = f"""
-            <b>Area:</b> {row['AreaName']}<br>
-            <b>Number of BHK:</b> {row['NumberOfBHK']}<br>
-            <b>Price:</b> {row['Price']}<br>
-            <b>Transaction:</b> {row['Transaction']}<br>
-            <b>Built-up Area:</b> {row['BuiltUpArea_sqft']}<br>
-            <b>Availability:</b> {row['Availability']}<br>
-            <b>Posted By:</b> {row['PostedBy']}<br>
-            <b>RERA Approved:</b> {row['ReraApproved']}
-            """
-            
-            folium.Marker(
-                location=[row['Latitude'], row['Longitude']],
-                popup=popup_html,
-            ).add_to(marker_cluster)
-
-    # Display the map
-    st.markdown("<h3 style='text-align: center; color: black;'>Property Listing count by Area</h3>", unsafe_allow_html=True)
-    st.components.v1.html(bangalore_map._repr_html_(), height=600)
-else:
-    st.markdown("<h3 style='text-align: center; color: black;'>Property Listing count by Area</h3>", unsafe_allow_html=True)
-    st.markdown(
-    """
-    <h4 style='text-align: center; color: red; font-family: Arial, sans-serif; font-size: 16px;'>
-        No Data available for property count map
-    </h4>
-    """, 
-    unsafe_allow_html=True
-)
+        # Display the map
+        st.markdown("<h3 style='text-align: center; color: black;'>Property Listing count by Area</h3>", unsafe_allow_html=True)
+        st.components.v1.html(bangalore_map._repr_html_(), height=600)
+    else:
+        st.markdown("<h3 style='text-align: center; color: black;'>Property Listing count by Area</h3>", unsafe_allow_html=True)
+        st.markdown(
+        """
+        <h4 style='text-align: center; color: red; font-family: Arial, sans-serif; font-size: 16px;'>
+            No Data available for property count map
+        </h4>
+        """, 
+        unsafe_allow_html=True
+    )
     
-st.markdown(
-    """
-    <style>
-        .block-container {
-            padding-top: 1rem; /* Adjust top padding */
-            padding-bottom: 1rem; /* Adjust bottom padding */
-        }
-    </style>
-    """,
-    unsafe_allow_html=True
-)    
 
 # Ensure no division by zero for BuiltUpArea
 merged_df = merged_df[merged_df['BuiltUpArea_sqft'] > 0]
@@ -199,31 +188,31 @@ heatmap_points = [
     [row['Latitude'], row['Longitude'], row['Intensity']]
     for index, row in aggregated_data.iterrows()
 ]
+with col2:
+    # Create the map centered around the average latitude and longitude
+    if not merged_df.empty:  # Check if there are valid points
+        map_center = [
+            aggregated_data['Latitude'].mean(),
+            aggregated_data['Longitude'].mean(),
+        ]
+        m = folium.Map(location=map_center, zoom_start=11)
 
-# Create the map centered around the average latitude and longitude
-if not merged_df.empty:  # Check if there are valid points
-    map_center = [
-        aggregated_data['Latitude'].mean(),
-        aggregated_data['Longitude'].mean(),
-    ]
-    m = folium.Map(location=map_center, zoom_start=11)
+        # Add the heatmap
+        HeatMap(heatmap_points).add_to(m)
 
-    # Add the heatmap
-    HeatMap(heatmap_points).add_to(m)
-
-    # Save the map to an HTML file
-    m.save("price_per_sqft_heatmap.html")
-    # Display the map
-    st.markdown("<h3 style='text-align: center; color: black;'>Heat Map of Property Listing by Area</h3>", unsafe_allow_html=True)
-    st.components.v1.html(m._repr_html_(), height=600)
-    #print("Heatmap created and saved as 'price_per_sqft_heatmap.html'.")
-else:
-    st.markdown("<h3 style='text-align: center; color: black;'>Heat Map of Property Listing by Area</h3>", unsafe_allow_html=True)
-    st.markdown(
-    """
-    <h4 style='text-align: center; color: red; font-family: Arial, sans-serif; font-size: 16px;'>
-        No Data available for heatmap
-    </h4>
-    """, 
-    unsafe_allow_html=True
-)
+        # Save the map to an HTML file
+        m.save("price_per_sqft_heatmap.html")
+        # Display the map
+        st.markdown("<h3 style='text-align: center; color: black;'>Heat Map of Property Listing by Area</h3>", unsafe_allow_html=True)
+        st.components.v1.html(m._repr_html_(), height=600)
+        #print("Heatmap created and saved as 'price_per_sqft_heatmap.html'.")
+    else:
+        st.markdown("<h3 style='text-align: center; color: black;'>Heat Map of Property Listing by Area</h3>", unsafe_allow_html=True)
+        st.markdown(
+        """
+        <h4 style='text-align: center; color: red; font-family: Arial, sans-serif; font-size: 16px;'>
+            No Data available for heatmap
+        </h4>
+        """, 
+        unsafe_allow_html=True
+    )
