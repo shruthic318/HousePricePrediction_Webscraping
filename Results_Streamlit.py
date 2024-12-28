@@ -148,7 +148,7 @@ if not merged_df.empty:
 
     # Display the map
     st.markdown("<h3 style='text-align: center; color: black;'>Property Listing count by Area</h3>", unsafe_allow_html=True)
-    st.components.v1.html(bangalore_map._repr_html_(), height=300)
+    st.components.v1.html(bangalore_map._repr_html_(), height=400)
 else:
     st.markdown("<h3 style='text-align: center; color: black;'>Property Listing count by Area</h3>", unsafe_allow_html=True)
     st.markdown(
@@ -203,7 +203,7 @@ if not merged_df.empty:  # Check if there are valid points
     m.save("price_per_sqft_heatmap.html")
     # Display the map
     st.markdown("<h3 style='text-align: center; color: black;'>Heat Map of Property Listing by Area</h3>", unsafe_allow_html=True)
-    st.components.v1.html(m._repr_html_(), height=300)
+    st.components.v1.html(m._repr_html_(), height=400)
     #print("Heatmap created and saved as 'price_per_sqft_heatmap.html'.")
 else:
     st.markdown("<h3 style='text-align: center; color: black;'>Heat Map of Property Listing by Area</h3>", unsafe_allow_html=True)
