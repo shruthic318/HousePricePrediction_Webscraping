@@ -8,6 +8,8 @@ from folium.plugins import HeatMap
 import folium
 from folium.plugins import MarkerCluster
 
+st.set_page_config(layout="wide")
+
 #Load the data to a dataframe
 filepath = os.path.join(os.path.dirname(__file__), 'Dataset', 'Cleaned_HousePrice.csv')
 df = pd.read_csv(filepath)
